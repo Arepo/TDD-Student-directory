@@ -32,14 +32,18 @@ describe 'creating a directory' do
 		expect(create_directory[0][:cohort]).to eq :May
 	end
 
-	it 'allows you to specify the cohort' do
+	it 'accepts a cohort different from the default' do
 		add_student('James', :November)
 		expect(create_directory[0][:cohort]).to eq :November
 	end
 
 	it 'assumes the year is 2014 if not specified' do
-		add_student(James, wibble)
+		add_student('James', :February)
 		expect(create_directory[0][:year]).to eq 2014
 	end
-	
+
+	it 'accepts a year different from the default' do
+		add_student('James', nil, 2013)
+		expect(create_directory[0][:year]).to eq 2013
+	end
 end
