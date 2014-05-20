@@ -38,8 +38,6 @@ describe 'adding a student to the directory' do
 	
 end
 
-
-
 describe 'it lists students' do
 
 	it 'in the following way "Bob (May cohort)"' do
@@ -74,3 +72,43 @@ describe 'pluralises appropriately' do
 	end
 
 end 
+
+describe 'deleting students' do
+
+	it 'deletes students by first name' do
+		add_student("Steve")
+		add_student("Bob")
+		expect(delete_student("Steve")).to eq [{name: "Bob", cohort: :May, year: 2014}]
+	end
+
+	it 'actually deletes students by first name' do
+		add_student("Steve")
+		add_student("Bob")
+		expect(delete_student("Bob")).to eq [{name: "Steve", cohort: :May, year: 2014}]
+	end
+
+	it 'knows to delete May Steve' do
+		add_student("Steve", :May)
+		add_student("Steve", :November, 2013)
+		expect(delete_student("Steve", :May)).to eq [{name: "Steve", cohort: :November, year: 2013}]
+	end
+end
+
+describe 'writing to CSV file' do
+
+	# it 'check file called students.csv exists' do
+	# 	expect(File.exists?("students.csv")).to be_true
+	# end
+
+	it 'leaves behind a file called students.csv' do
+		save_student_list
+		expect(File.exists?("students.csv")).to be_true
+	end
+
+	it 'puts current student list into students.csv' do
+		add_student("Steve", :May)
+		add_student("John", :November, 2013)
+		save_student_list
+		expect(CSV.readlines("students.csv")).to eq [["Steve", "May", "2014"], ["John", "November", "2013"]]
+	end
+end
