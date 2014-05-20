@@ -1,20 +1,66 @@
 require 'directory2'
 
-describe 'creating a directory' do 
+describe 'adding a student to the directory' do 
 
 	it 'the directory is empty when first used' do
-		expect(create_directory).to be_empty
+		expect(students).to be_empty
 	end
 
 	it 'adds students to the directory' do
 		add_student('Bob')
-		expect(create_directory).not_to be_empty
+		expect(students).not_to be_empty
 	end 
 
-	it 'checks that the added student is the right one' do
+	it 'checks that the student saved is the student entered' do
 		add_student('Fred')
 		expect(@students[0][:name]).to eq 'Fred'
 	end
+
+	it 'assumes students are from may cohort if not specified' do
+		add_student('James')
+		expect(students[0][:cohort]).to eq :May
+	end
+
+	it 'accepts a cohort different from the default' do
+		add_student('James', :November)
+		expect(students[0][:cohort]).to eq :November
+	end
+
+	it 'assumes the year is 2014 if not specified' do
+		add_student('James', :February)
+		expect(students[0][:year]).to eq 2014
+	end
+
+	it 'accepts a year different from the default' do
+		add_student('James', nil, 2013)
+		expect(students[0][:year]).to eq 2013
+	end
+	
+end
+
+
+
+describe 'it lists students' do
+
+	it 'in the following way "Bob (May cohort)"' do
+		add_student('Bob', :May, 2014)
+		expect(list_students).to eq "Bob (May cohort, 2014)"
+	end
+
+	it 'having also met Roy' do
+		add_student('Roy', :November, 2013)
+		expect(list_students).to eq "Roy (November cohort, 2013)"
+	end
+
+	it 'can list more than one student, Bob and Roy' do
+		add_student('Roy', :November, 2013)
+		add_student('Bob', :May, 2014)
+		expect(list_students).to eq "Roy (November cohort, 2013)\nBob (May cohort, 2014)"
+	end
+
+end
+
+describe 'pluralises appropriately' do
 
 	it 'knows if there are 2 students' do
 		add_student('Fred')
@@ -27,23 +73,4 @@ describe 'creating a directory' do
 		expect(count_students).to eq 1
 	end
 
-	it 'assumes students are from may cohort if not specified' do
-		add_student('James')
-		expect(create_directory[0][:cohort]).to eq :May
-	end
-
-	it 'accepts a cohort different from the default' do
-		add_student('James', :November)
-		expect(create_directory[0][:cohort]).to eq :November
-	end
-
-	it 'assumes the year is 2014 if not specified' do
-		add_student('James', :February)
-		expect(create_directory[0][:year]).to eq 2014
-	end
-
-	it 'accepts a year different from the default' do
-		add_student('James', nil, 2013)
-		expect(create_directory[0][:year]).to eq 2013
-	end
-end
+end 
